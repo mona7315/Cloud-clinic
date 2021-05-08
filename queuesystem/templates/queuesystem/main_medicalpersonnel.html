@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+<style>
+	body {
+		background-image: url("/static/image/bgg.jpg");
+		background-attachment: fixed;
+		background-position: center;
+		background-repeat: no-repeat;
+		background-size: cover;
+
+
+	}
+</style>
+
+<!-- start banner Area -->
+<section class="pt-50 ">
+<div class="slider">
+	<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+		<div class="carousel-inner" role="listbox">
+			<!-- Slide One - Set the background image for this slide in the line below -->
+			<div class="carousel-item active mt-5"
+				style=" background-image: url('/static/image/doc.jpg'); background-size: cover;">
+					<div class="row justify-content-center mt-5 ">
+						<div class="col  mx-auto ">
+							<h2 class="text-center  mt-5" style="color: #E45B07;">หมายเลขคิวปัจจุบัน</h2>
+							<h4 style="color: #E45B07; font-size: 10rem;" id="queue_number">-</h4>
+
+						</div>
+					</div>
+						
+				
+				</div>
+
+
+
+			</div>
+
+
+		</div>
+	</div>
+</div>
+</section>
+
+
+<!-- Start About Area -->
+<section class="About-area section-gap img-fluid"
+	style="background-image: url('/static/image/20437099.jpg'); background-size: cover; overflow: hidden;">
+	<div class="row">
+		<div class="col">
+			<img src="http://medicalcenter.kmitl.ac.th/wp-content/uploads/2019/05/000.png" class="img-fluid">
+			<img src="http://medicalcenter.kmitl.ac.th/wp-content/uploads/2019/05/pp2-370x553.png">
+		</div>
+		<div class="col">
+			<img src="http://medicalcenter.kmitl.ac.th/wp-content/uploads/2019/05/01mon.png" class="img-fluid"
+				width="auto;">
+			<img src="http://medicalcenter.kmitl.ac.th/wp-content/uploads/2019/05/02tue.png" class="img-fluid"
+				width="auto;">
+			<img src="http://medicalcenter.kmitl.ac.th/wp-content/uploads/2019/05/03wed.png" class="img-fluid"
+				width="auto;">
+			<img src="http://medicalcenter.kmitl.ac.th/wp-content/uploads/2019/05/04thu.png" class="img-fluid"
+				width="auto;">
+			<img src="http://medicalcenter.kmitl.ac.th/wp-content/uploads/2019/05/05fri.png" class="img-fluid"
+				width="auto;">
+		</div>
+	</div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    axios.get('/run_queue_api/')
+        .then(function(response){
+            data = (response.data)
+            console.log(data)
+
+            for (i = 0; i < data.length; i++){
+                if (data[i].status == 'called'){
+                    document.getElementById('queue_number').innerText = data[i].queue_no
+                }
+            }
+
+        })
+        .catch(function(error){
+            console.log(error)
+        })
+
+</script>
+
+
+{% endblock content %}

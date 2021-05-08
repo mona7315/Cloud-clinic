@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+    .navnav {
+        background-color: #B022EA;
+        width: 100%;
+
+    }
+</style>
+
+
+<div class="container ">
+    <div class="row mt-5">
+        <div class="col mt-5">
+            <br>
+            <div class="list-group col-12  mx-auto d-block">
+                <button type="button" class="list-group-item list-group-item-action" disabled>
+                    แสดงนัดทั้งหมดของ {{user.first_name}} {{user.last_name}}
+                </button>
+
+            </div>
+            {% if none_data %}
+            <br>
+            <p class="text-danger">{{none_data}}</p>
+            {% else %}
+            {% for i,j in my_list %} 
+            <div class="list-group col-12 d-block text-left">
+                <a href="{% url 'main_appointment' i.app_id %}">
+                    <button type="button" class="list-group-item list-group-item-action text-center">
+                        <font style="color: tomato;">วันที่นัด: {{i.next_date}}</font>&nbsp;&nbsp;
+                        <font style="color: tomato;">เวลาประมาณการ: {{i.app_time}}</font>&nbsp;&nbsp;
+                        <font style="color: tomato;">ชื่อแพทย์: {{j}}</font>
+                    </button>
+                </a>
+            </div>
+            {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

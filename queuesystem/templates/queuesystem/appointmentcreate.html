@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+.navnav{
+    background-color:#D62020; 
+    width: 100%;
+  
+  }
+</style>
+
+
+<div class="container mt-5 ">
+    <div class="row flex-lg-nowrap mt-5">
+        <div class="col mx-auto mt-5">
+            <div class="row text-center">
+                <div class="col-10 mb-3  d-block mx-auto ">
+                    <div class="card ">
+                        <div class="card-body">
+                            <div class="e-profile">
+                                <form action="" method="POST">
+                                    {% csrf_token %}
+                                    <h4 class="card-title">Create Appointment</h4>
+                                    <p class="card-title">(สร้างการนัดแก่ผู้ป่วยเพื่อรับการรักษาในครั้งถัดไป)</p>
+                                    <h5 class="card-title" style="color: tomato;">รหัสผู้ป่วย :
+                                        {{patient.account_id_id}}</h5>
+                                    <h5 class="card-title" style="color: tomato;">ชื่อผู้ป่วย :
+                                        {{user.first_name}}&nbsp;{{user.last_name}}</h5>
+
+                                    <div class="row mt-5">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label>Select Doctor ID / name (แพทย์)</label>
+                                                    <select class="custom-select required d-block  mx-auto "
+                                                    name="med_person" style="width:auto;" required>
+                                                    <option selected disabled>เลือกแพทย์ที่ให้พบนัด/ Select Doctor ID & name</option>
+                                                    {% for i in med_person %}
+                                                        {% for j in doctor %}
+                                                            {% if i.id == j.account_id_id %}
+                                                                <option value="{{i.id}}">{{i.first_name}}&nbsp;{{i.last_name}}</option>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label>Time (เวลาประมาณการที่นัด)</label>
+                                                <input class="form-control" type="time" name="app_time" value="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label>Create Date (วันที่สร้างการนัด)</label>
+                                                <input class="form-control" type="text" name="create_date" value="{{today}}" disabled>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label>Next Date (วันที่นัดในครั้งถัดไป)</label>
+                                                <input style="width:100%;" value=""
+                                                class="form-control   mx-auto" type="date" name="next_date" >
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col mb-3">
+                                            <div class="form-group">
+                                                <label>Reason (เหตุที่นัด)</label>
+                                                <input class="form-control " name="reason">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col d-flex justify-content-end  mr-4">
+                                            <button class="btn btn-success mt-3 " type="submit">Create</button>
+                                        </div>
+                                    </div>
+                                </form>
+
+
+
+
+
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+{% endblock content %}

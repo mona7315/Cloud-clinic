@@ -1,0 +1,295 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Mobile Specific Meta -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- Favicon-->
+  {% comment %}
+  <link rel="shortcut icon" href="img/elements/fav.png"> {% endcomment %}
+  <!-- meta character set -->
+  <meta charset="UTF-8">
+  <!-- Site Title -->
+  <title>Queue Reservation System KMITl</title>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+  <!--
+			CSS
+			============================================= -->
+  <link rel="stylesheet" href="/static/css/linearicons.css">
+  <link rel="stylesheet" href="/static/css/owl.carousel.css">
+  <link rel="stylesheet" href="/static/css/nice-select.css">
+  <link rel="stylesheet" href="/static/css/magnific-popup.css">
+  <link rel="stylesheet" href="/static/css/bootstrap.css">
+  <link rel="stylesheet" href="/static/css/main.css">
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+
+
+    body {
+      font-family: 'Kanit', sans-serif !important;
+      background-image: url("/static/image/bgg.jpg");
+      background-attachment: fixed;
+      -webkit-background-size: cover;
+      -moz-background-size: cover;
+      -o-background-size: cover;
+      background-size: cover;
+      margin-top: 0px;
+      margin-left: 0px;
+      margin-right: 0px;
+      margin-bottom: 0px;
+      width:100%;
+      height:100%;
+
+
+    }
+
+    .navbar-brand {
+      color: #fff !important;
+    }
+
+    .navbar-brand:hover,
+    .navbar-brand:focus {
+      color: yellow !important;
+    }
+
+
+    .btn-outline-create {
+      background: none !important;
+      /*2cc8df*/
+      border: none;
+      color: white;
+
+    }
+
+    .btn-outline-create:hover {
+      background: none !important;
+      color: yellow;
+      box-shadow: none !important;
+    }
+
+    .btn-outline-create:focus {
+      background: none !important;
+    }
+
+    .btn-outline-create:active {
+      background: none !important;
+    }
+
+
+    .dropdown-item:hover {
+      background: none !important;
+      background-image: none;
+    }
+
+    .navnav {
+      background-color: #38C99F;
+      width: 100%;
+
+    }
+
+    .footer{
+
+  bottom: 0px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+    /* width */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #355952;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #1AA086;
+}
+
+@font-face {
+    font-family: 'Kanit-Regular';
+    src: local('Kanit-Regular'),
+         url('{% static 'fonts/Kanit-Regular.ttf' %} format("truetype")');
+  }
+
+  h1 ,h2 ,h3 ,h4 ,h5 ,h6{
+    font-family: 'Kanit', sans-serif !important;
+  }
+
+  footer {
+  right: 0;
+  bottom:0;
+  left:0;
+  text-align: center;
+  width: 100%;
+
+}
+
+
+
+
+  </style>
+
+</head>
+
+<body class="text-center" style="width:100%; height:100%;">
+
+  <div id="undefined-sticky-wrapper" class="sticky-wrapper">
+
+    <nav class=" navbar navbar-expand-lg navbar-light fixed-top navnav ">
+    {% if user.is_superuser %}
+        <a class=" navbar-brand " href=" {% url 'index' %}">
+        Queue KMITL Clinic
+      </a>
+    {% endif %}
+    {% if not user.is_superuser %}
+      {% if perms.userprofile.add_medical_history%}
+        <a class=" navbar-brand " href=" {% url 'main_medicalpersonnel' %}">
+          Queue KMITL Clinic
+        </a>
+      {% elif perms.queuesystem.add_queue_system %}
+          <a class=" navbar-brand " href=" {% url 'main_patient' %}">
+          Queue KMITL Clinic
+        </a>
+      {% else %}
+          <a class=" navbar-brand " href=" {% url 'index' %}">
+          Queue KMITL Clinic
+        </a>
+      {% endif %}
+    {% endif %}
+
+      <button class="navbar-toggler" type=" button" data-toggle="collapse" data-target="#navbarNavDropdown"
+        aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavDropdown">
+        <ul class="navbar-nav ml-auto">
+          {% if user.is_authenticated %}
+              <li class="nav-item align-self-center mr-5">
+                <h5 class="my-auto text-light mr-5">User: {{request.user.username}}</h5>
+              </li>
+            {% if perms.userprofile.add_medical_history%}
+                {% if user.is_superuser %}
+                <button onclick="window.location.href = {% url 'register_med' %}"
+                    class="btn btn-outline-create mr-5">Sign Up for Medicalpersonnel</button>
+                {% else %}
+                <div class="d-flex justify-content-center dropdown  show ">
+                  <a class="btn btn-outline-create  dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true">
+                    Queues
+                  </a>
+
+                  <div class="dropdown-menu ">
+                    <a class="dropdown-item" href="{% url 'run_queue' %}">Run Queues</a>
+                    <a class="dropdown-item" href="{% url 'remaining_queue' %}">Remaining Queues</a> </div>
+                </div>
+                <div class="dropdown show d-flex justify-content-center btn-outline-create divider" style="display: block; ">
+                  <a class="btn btn-outline-create  ml-5 dropdown-toggle" href="#" data-toggle="dropdown"
+                    aria-haspopup="true">
+                    Patient Search
+                  </a>
+
+                  <div class="dropdown-menu " aria-labelledby="navbarDropdownMenuLink">
+                    <a class="dropdown-item" href="{% url 'search_foradmitted' %}">Add Admitted Patient History</a>
+                    <a class="dropdown-item" href="{% url 'search_appointment' %}">Create Appointment</a>
+                    <a class="dropdown-item" href="{% url 'search' %}">Medical history</a>
+                  </div>
+            </div>
+            <button onclick="window.location.href = {% url 'changepassword' %}"
+                    class="btn btn-outline-create mr-5">Change Password</button>
+          {% endif %}
+            {% elif perms.queuesystem.add_queue_system %}
+                  <button onclick="window.location.href = {% url 'before_generatequeue' %}"
+                    class="btn btn-outline-create mr-5">Generate queue</button>
+                  <button onclick="window.location.href = {% url 'appointment_check' %}"
+                    class="btn btn-outline-create mr-5">Check Appointment</button>
+                  <button onclick="window.location.href = {% url 'editprofile' %}"
+                    class="btn btn-outline-create mr-5">Editprofile</button>
+
+          {% endif %}
+          <button onclick="window.location.href = {% url 'logout' %}"
+                    class="btn btn-outline-create mr-5">Logout</button>
+          {% else %}
+          <div class="btn-group" role="group" aria-label="Basic example">
+            <button onclick="window.location.href = {% url 'login' %}"
+              class="btn btn-outline-create my-2 my-sm-0">Login</button>
+            <button onclick="window.location.href = {% url 'register' %}"
+              class="btn btn btn-outline-create  my-2 my-sm-0">Sign
+              Up</button>
+
+          </div>
+
+      </div>
+      {% comment %} <li class="nav-item mypage align-self-center">
+        <div class="btn-toolbar" role="toolbar" aria-label="Basic example">
+          <a class="nav-link" href="{% url 'login' %}">
+            <button class="btn btn-outline-dark my-2 my-sm-0" type="">Login</button>
+          </a>
+          <a class="nav-link" href="{% url 'register' %}">
+            <button class="btn btn-outline-dark my-2 my-sm-0" type="">Register</button>
+          </a>
+        </div>
+      </li> {% endcomment %}
+      {% endif %}
+      </ul>
+      {% comment %} <ul class="nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'login' %}" style="font-size: 1.2em;">Login</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'register' %}" style="font-size: 1.2em;">Sign Up</a>
+        </li>
+      </ul> {% endcomment %}
+  </div>
+  </nav>
+  <script>$(function () {
+      $(document).scroll(function () {
+        var $nav = $(".navbar-fixed-top");
+        $nav.toggleClass('scrolled', $(this).scrollTop() > $nav.height());
+      });
+    });
+
+
+
+    </script>
+
+
+  {% block content %}
+
+  {% endblock content %}
+
+
+  <!-- Footer -->
+  <footer class="footer mt-5" style="background-color: #E56C00; right: 0;bottom:0;left:0; ">
+
+    <!-- Copyright -->
+    <div class="footer-copyright  text-center py-4"
+      style="background-color: #E56C00; color: aliceblue; font-weight: normal; right: 0;bottom:0;left:0;  ">
+      <p>©2020 ระบบจองคิวคลินิกเวชกรรม (Queue reservationsystem of Medical Centre KMITL)</p>
+      <p>สถาบันเทคโนโลยีพระจอมเกล้าเจ้าคุณทหารลาดกระบัง</p>
+    </div>
+    <!-- Copyright -->
+
+  </footer>
+  <!-- Footer -->
+
+
+
+
+</body>
+
+</html>

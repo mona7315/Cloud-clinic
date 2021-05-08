@@ -1,0 +1,221 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+    .table th,td,tr {
+        text-align: center;
+
+    }
+
+    td { text-align: left; }
+
+    .table>thead>tr>th {
+        vertical-align: baseline;
+
+    }
+
+    table {
+    table-layout: auto;
+    word-wrap: break-word;
+}
+</style>
+
+
+<section class="section-gap">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-3 mx-auto">
+                <h1 class=" text-black" style="font-size: 1.7em; ">หมายเลขคิวปัจจุบันคือ</h1>
+                <h1 class="text-black" style="font-size: 10vw; " id='queue_number'>- </h1>
+                <p>
+                    {{ today }}
+                </p>
+            </div>
+
+            <div class="col-md-9">
+                <div class=" table-responsive">
+                <table class="table table-bordered align-items-start">
+                    <thead>
+                        <tr>
+                            <th scope="col">หมายเลขคิว</th>
+                            <th scope="col">ผู้ป่วยที่ทำการกดคิว</th>
+                            <th scope="col">มีนัด / ไม่มีนัด</th>
+                            <th scope="col">แพทย์ที่นัดพบ</th>
+                            <th scope="col" >สถานะ</th>
+                            <th scope="col" ></th>
+                        </tr>
+                    </thead>
+                    <tbody id='queue'>
+                        <!-- {% for i in queue %}
+                        <tr>
+                            <th scope="row">{{i.queue_no}}</th>
+                            <td>
+                                {% for j in patient %}
+                                    {% if j.id == i.create_by_id %}
+                                        {{j.first_name}} {{j.last_name}}
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {% if i.doctor_id %}
+                                    <label>มีนัด</label>
+                                {% else %}
+                                    <label>ไม่มีนัด</label>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% for j in doctor %}
+                                    {% if j.id == i.doctor_id %}
+                                        {{j.first_name}} {{j.last_name}}
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
+                            <td >
+                                {% if i.status == 'waiting' %}
+                                    <p class="text-danger" style="text-align: center;">Waiting</p>
+                                {% elif i.status == 'called' %}
+                                    <p class="text-warning" style="text-align: center;">Called</p>
+                                {% else %}
+                                    <p class="text-success" style="text-align: center;">Finished</p>
+                                {% endif %}
+
+                            </td>
+                            <td style="text-align: center;">
+                                <form action="" method="POST">
+                                    <button type="submit" class="btn btn-success text-uppercase" name="">&nbsp;เรียกคิว&nbsp;</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %} -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    </div>
+
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    axios.defaults.xsrfCookieName = 'csrftoken'
+    axios.defaults.xsrfHeaderName = 'X-CSRFTOKEN'
+
+    axios.get('/run_queue_api/')
+        .then(function(response){
+            data = (response.data)
+            console.log(data)
+
+            for (i = 0; i < data.length; i++){
+                createQueue(data[i])
+
+                if (data[i].status == 'called'){
+                    document.getElementById('queue_number').innerText = data[i].queue_no
+                }
+            }
+
+
+        })
+        .catch(function(error){
+            console.log(error)
+        })
+
+    function createQueue(data){
+        let queue = document.getElementById('queue')
+
+        let tr = document.createElement('tr')
+
+        let th = document.createElement('th')
+        th.innerText = data.queue_no
+        tr.append(th)
+
+        let td = document.createElement('td')
+        td.innerText = data.patient_firstname + ' ' + data.patient_lastname
+        tr.append(td)
+
+        if (data.doctor_firstname){
+            td = document.createElement('td')
+            td.innerText = 'มีนัด'
+            tr.append(td)
+
+            td = document.createElement('td')
+            td.innerText = data.doctor_firstname + ' ' + data.doctor_lastname
+            tr.append(td)
+        }
+        else{
+            td = document.createElement('td')
+            td.innerText = 'ไม่มีนัด'
+            tr.append(td)
+
+            td = document.createElement('td')
+            td.innerText = ''
+            tr.append(td)
+        }
+
+        td_status = document.createElement('td')
+        td_status.innerText = data.status
+        td_status.setAttribute('id', data.queue_id)
+        if (data.status == 'finished'){
+            td_status.setAttribute('class', 'text-success')
+        }
+        else if (data.status == 'called'){
+            td_status.setAttribute('class', 'text-warning')
+        }
+        else if (data.status == 'waiting'){
+            td_status.setAttribute('class', 'text-danger')
+        }
+        tr.append(td_status)
+
+        td = document.createElement('td')
+        button = document.createElement('button')
+        button.setAttribute('class', 'btn btn-success text-uppercase')
+        button.setAttribute('id', 'button'+data.queue_id)
+        if (data.status == 'finished'){
+            button.innerHTML = '&nbsp;ตรวจแล้ว&nbsp;'
+        }
+        else if (data.status == 'called'){
+            button.innerHTML = '&nbsp;เสร็จสิ้น&nbsp;'
+        }
+        else if (data.status == 'waiting'){
+            button.innerHTML = '&nbsp;เรียกคิว&nbsp;'
+        }
+        button.addEventListener('click', function(){
+            axios.post('/run_queue_api/', {
+                queue : data
+            })
+            .then(function(response){
+                console.log(response.data.queue_id)
+
+                status = response.data.status
+                
+                
+                if (status == 'finished'){
+                    document.getElementById(data.queue_id).setAttribute('class', 'text-success')
+                    document.getElementById('button'+data.queue_id).innerText = ' ตรวจแล้ว '
+                }
+                else if (status == 'called'){
+                    document.getElementById(data.queue_id).setAttribute('class', 'text-warning')
+                    document.getElementById('button'+data.queue_id).innerText = ' เสร็จสิ้น '
+                    document.getElementById('queue_number').innerText = response.data.queue_no
+                }
+                else if (status == 'waiting'){
+                    document.getElementById(data.queue_id).setAttribute('class', 'text-danger')
+                    document.getElementById('button'+data.queue_id).innerText = ' เรียกคิว '
+                }
+                document.getElementById(response.data.queue_id).innerText = status
+            })
+            .catch(function(error){
+                console.log(error)
+            })
+        })
+        td.append(button)
+        tr.append(td)
+
+        queue.append(tr)
+
+    }
+
+
+</script>
+
+{% endblock content %}
