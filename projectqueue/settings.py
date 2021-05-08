@@ -80,7 +80,11 @@ WSGI_APPLICATION = 'projectqueue.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME' : 'clinicDB',
+        'HOST' : 'kmitl-queue.ciluasfmkj9g.ap-southeast-1.rds.amazonaws.com',
+        'USER' : 'admin',
+        'PASSWORD' : 'NonMonzMang7799'
     }
 
 
